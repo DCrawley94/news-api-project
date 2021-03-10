@@ -13,6 +13,9 @@ afterAll(() => {
 
 describe('/api', () => {
   describe('/topics', () => {
+    //   describe( 'Error handling', () => {
+
+    // });
     describe('get', () => {
       it('provides a 200 status code  ', () => {
         return request(app)

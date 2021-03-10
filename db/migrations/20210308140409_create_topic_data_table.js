@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  console.log('creating topic table');
+  // console.log('creating topic table');
   return knex.schema.createTable('topics', (topicsTable) => {
     //topicsTable.increments('topic_id', { primaryKey: false });
     topicsTable.string('description').notNullable();
@@ -8,6 +8,6 @@ exports.up = function (knex) {
 };
 
 exports.down = function (knex) {
-  console.log('removing topics table');
+  // console.log('removing topics table');
   return knex.schema.dropTable('topics');
 };
