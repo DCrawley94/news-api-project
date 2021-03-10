@@ -16,8 +16,8 @@ describe('/api', () => {
     //   describe( 'Error handling', () => {
 
     // });
-    describe('get', () => {
-      it('provides a 200 status code  ', () => {
+    describe('GET', () => {
+      test('status 200, responds with all topics  ', () => {
         return request(app)
           .get('/api/topics')
           .expect(200)
@@ -32,4 +32,31 @@ describe('/api', () => {
       });
     });
   });
+  describe('/users/:username', () => {
+    describe('GET', () => {
+      test('status 200, returns user object', () => {
+        return request(app)
+          .get('/api/users/butter_bridge')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toHaveProperty('user');
+            expect(body.user).toHaveProperty('username');
+            expect(body.user).toHaveProperty('avatar_url');
+            expect(body.user).toHaveProperty('name');
+          });
+      });
+    });
+    describe('Error handling', () => {
+      test("status 404 when given a username that doesn't exist", () => {
+        return request(app).get('/api/users/duncancrawley').expect(404);
+      });
+    });
+  });
+  // describe( '/articles/:article_id', () => {
+  //   describe('DELETE', () => {
+  //     test('status 204 ', () => {
+
+  //     });
+  //   });
+  // });
 });
