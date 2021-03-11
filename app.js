@@ -3,9 +3,9 @@ const apiRouter = require( './routes/apiRouter.js' );
 const{customErrors} = require('./error_handlers/customErrors')
 const { handle400s } = require('./error_handlers/handle400s');
 const { handle500s } = require('./error_handlers/handle500s');
-
-
 const app = express();
+
+app.use(express.json());
 
 app.use('/api', apiRouter);
 app.use(customErrors);

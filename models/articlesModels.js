@@ -15,3 +15,15 @@ exports.fetchArticleById = (article_id) => {
         return Promise.reject({ status: 404, msg: 'Article does not exist' });
     });
 };
+
+exports.changeArticleVotes = (article_id, inc_votes) => {
+  return connection
+    .select('*')
+    .from('articles')
+    .where('articles.article_id', Number(article_id))
+    .then((articleRows) => {
+      const article = articleRows[0];
+      article.votes += inc_votes;
+      return article;
+    });
+};

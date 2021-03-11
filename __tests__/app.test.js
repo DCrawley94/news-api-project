@@ -42,16 +42,16 @@ describe('/api', () => {
             expect(body.user).toHaveProperty('name');
           });
       });
-    });
-    describe('Error handling', () => {
-      test("status 404 when given a username that doesn't exist *YET*", () => {
-        return request(app)
-          .get('/api/users/duncancrawley')
-          .expect(404)
-          .then(({ body }) => {
-            expect(body).toHaveProperty('msg');
-            expect(body.msg).toBe('Username does not exist');
-          });
+      describe('Error handling', () => {
+        test("status 404 when given a username that doesn't exist *YET*", () => {
+          return request(app)
+            .get('/api/users/duncancrawley')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toHaveProperty('msg');
+              expect(body.msg).toBe('Username does not exist');
+            });
+        });
       });
     });
   });
@@ -80,19 +80,59 @@ describe('/api', () => {
             expect(article.comment_count).toBe('2');
           });
       });
-    });
-    describe('Error handling', () => {
-      test("status 404 when given an article_id that doesn't exist *YET*", () => {
-        return request(app)
-          .get('/api/articles/10573')
-          .expect(404)
-          .then(({ body }) => {
-            expect(body).toHaveProperty('msg');
-            expect(body.msg).toBe('Article does not exist');
-          });
+      describe('Error handling', () => {
+        test("status 404 when given an article_id that doesn't exist *YET*", () => {
+          return request(app)
+            .get('/api/articles/10573')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body).toHaveProperty('msg');
+              expect(body.msg).toBe('Article does not exist');
+            });
+        });
+        test('status 400 when given an invalid article id', () => {
+          return request(app)
+            .get('/api/articles/pidgeon_party')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body).toHaveProperty('msg');
+              expect(body.msg).toBe('Bad Request');
+            });
+        });
       });
-      test('status 400 when given an invalid article id', () => {
-        return request(app).get('/api/articles/pidgeon_party').expect(400);
+    });
+    describe('PATCH', () => {
+      test('status 204, responds with updated article object', () => {
+        return request(app)
+          .patch('/api/articles/5')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body: { article } }) => {
+            expect;
+          })
+          .then(() => {
+            return connection
+              .select('*')
+              .from('articles')
+              .where('article_id', 5)
+              .then((article) => {
+                article = article[0];
+                console.log(typeof article.created_at, '<------article');
+                expect(article.author).toBe('rogersop');
+                expect(article.title).toBe(
+                  'UNCOVERED: catspiracy to bring down democracy'
+                );
+                expect(article.article_id).toBe(5);
+                expect(article.body).toBe(
+                  'Bastet walks amongst us, and the cats are taking arms!'
+                );
+                expect(article.topic).toBe('cats');
+                expect(String(article.created_at)).toBe(
+                  'Tue Nov 19 2002 12:21:54 GMT+0000 (Greenwich Mean Time)'
+                );
+                expect(article.votes).toBe(1);
+              });
+          });
       });
     });
   });
