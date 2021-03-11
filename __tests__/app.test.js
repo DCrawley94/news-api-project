@@ -82,7 +82,7 @@ describe('/api', () => {
       });
     });
     describe('Error handling', () => {
-      it("status 404 when given an article_id that doesn't exist *YET*", () => {
+      test("status 404 when given an article_id that doesn't exist *YET*", () => {
         return request(app)
           .get('/api/articles/10573')
           .expect(404)
@@ -90,6 +90,9 @@ describe('/api', () => {
             expect(body).toHaveProperty('msg');
             expect(body.msg).toBe('Article does not exist');
           });
+      });
+      test('status 400 when given an invalid article id', () => {
+        return request(app).get('/api/articles/pidgeon_party').expect(400);
       });
     });
   });

@@ -9,7 +9,7 @@ const app = express();
 
 app.use('/api', apiRouter);
 app.use(customErrors);
-//app.use(handle400s);
+app.use(handle400s);
 app.use(handle500s);
 
 module.exports = app;
