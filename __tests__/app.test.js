@@ -44,7 +44,7 @@ describe('/api', () => {
       });
     });
     describe('Error handling', () => {
-      test("status 404 when given a username that doesn't exist", () => {
+      test("status 404 when given a username that doesn't exist *YET*", () => {
         return request(app)
           .get('/api/users/duncancrawley')
           .expect(404)
@@ -82,7 +82,15 @@ describe('/api', () => {
       });
     });
     describe('Error handling', () => {
-      it("status 404 when given an article_id that doesn't exist *YET*", () => {});
+      it("status 404 when given an article_id that doesn't exist *YET*", () => {
+        return request(app)
+          .get('/api/articles/10573')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).toHaveProperty('msg');
+            expect(body.msg).toBe('Article does not exist');
+          });
+      });
     });
   });
 });
