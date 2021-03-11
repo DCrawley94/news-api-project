@@ -6,7 +6,10 @@ exports.fetchUserById = (username) => {
     .from('users')
     .where('username', username)
     .then((userRows) => {
-      if (userRows.length > 0) return userRows[0];
-      else return Promise.reject({ status: 404, msg: 'Username not found' });
+      if (userRows.length > 0) {
+        return userRows[0];
+      } else {
+        return Promise.reject({ status: 404, msg: 'Username not found' });
+      }
     });
 };

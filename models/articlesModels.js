@@ -23,7 +23,6 @@ exports.changeArticleVotes = (article_id, inc_votes) => {
     .increment('votes', inc_votes)
     .returning('*')
     .then((articleRows) => {
-      console.log(articleRows);
       if (articleRows.length) return articleRows[0];
       else {
         return Promise.reject({ status: 404, msg: 'Article not found' });

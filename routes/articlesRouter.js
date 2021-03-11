@@ -7,6 +7,9 @@ const {
 articlesRouter
   .route('/:article_id')
   .get(getArticleById)
-  .patch(patchArticleById);
+  .patch(patchArticleById)
+  .all(() => {
+    Promise.reject({ status: 405, msg: 'Method Not Allowed' });
+  });
 
 module.exports = articlesRouter;

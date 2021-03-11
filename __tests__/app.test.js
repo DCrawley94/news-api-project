@@ -47,9 +47,8 @@ describe('/api', () => {
           return request(app)
             .get('/api/users/duncancrawley')
             .expect(404)
-            .then(({ body }) => {
-              expect(body).toHaveProperty('msg');
-              expect(body.msg).toBe('Username not found');
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Username not found');
             });
         });
       });
