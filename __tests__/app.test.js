@@ -77,8 +77,12 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { article } }) => {
             expect(article).toHaveProperty('comment_count');
+            expect(article.comment_count).toBe('2');
           });
       });
+    });
+    describe('Error handling', () => {
+      it("status 404 when given an article_id that doesn't exist *YET*", () => {});
     });
   });
 });
