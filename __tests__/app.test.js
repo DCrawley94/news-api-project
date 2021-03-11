@@ -49,7 +49,7 @@ describe('/api', () => {
             .expect(404)
             .then(({ body }) => {
               expect(body).toHaveProperty('msg');
-              expect(body.msg).toBe('Username does not exist');
+              expect(body.msg).toBe('Username not found');
             });
         });
       });
@@ -87,7 +87,7 @@ describe('/api', () => {
             .expect(404)
             .then(({ body }) => {
               expect(body).toHaveProperty('msg');
-              expect(body.msg).toBe('Article does not exist');
+              expect(body.msg).toBe('Article not found');
             });
         });
         test('status 400 when given an invalid article id', () => {
@@ -102,14 +102,30 @@ describe('/api', () => {
       });
     });
     describe('PATCH', () => {
-      test('status 204, responds with updated article object', () => {
+      test('status 200, responds with updated article object', () => {
         return request(app)
           .patch('/api/articles/5')
           .send({ inc_votes: 1 })
           .expect(200)
           .then(({ body: { article } }) => {
-            expect;
-          })
+            expect(article.author).toBe('rogersop');
+            expect(article.title).toBe(
+              'UNCOVERED: catspiracy to bring down democracy'
+            );
+            expect(article.article_id).toBe(5);
+            expect(article.body).toBe(
+              'Bastet walks amongst us, and the cats are taking arms!'
+            );
+            expect(article.topic).toBe('cats');
+            expect(article).toHaveProperty('created_at');
+            expect(article.votes).toBe(1);
+          });
+      });
+      test('status 200, article is successfully patched', () => {
+        return request(app)
+          .patch('/api/articles/5')
+          .send({ inc_votes: 50 })
+          .expect(200)
           .then(() => {
             return connection
               .select('*')
@@ -117,7 +133,6 @@ describe('/api', () => {
               .where('article_id', 5)
               .then((article) => {
                 article = article[0];
-                console.log(typeof article.created_at, '<------article');
                 expect(article.author).toBe('rogersop');
                 expect(article.title).toBe(
                   'UNCOVERED: catspiracy to bring down democracy'
@@ -127,12 +142,46 @@ describe('/api', () => {
                   'Bastet walks amongst us, and the cats are taking arms!'
                 );
                 expect(article.topic).toBe('cats');
-                expect(String(article.created_at)).toBe(
-                  'Tue Nov 19 2002 12:21:54 GMT+0000 (Greenwich Mean Time)'
-                );
-                expect(article.votes).toBe(1);
+                expect(article).toHaveProperty('created_at');
+                expect(article.votes).toBe(50);
               });
           });
+      });
+      describe('Error handling', () => {
+        test("status 404 when given article_id that doesn't exist *YET", () => {
+          return request(app)
+            .patch('/api/articles/10573')
+            .send({ inc_votes: 5 })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Article not found');
+            });
+        });
+        test('status 400 when given invalid article_id', () => {
+          return request(app)
+            .patch('/api/articles/pidgeon_party')
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Bad Request');
+            });
+        });
+        test('status 400 when patch request sent with invalid data type', () => {
+          return request(app)
+            .patch('/api/articles/5')
+            .send({ inc_votes: 'pidgeon_party' })
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Bad Request');
+            });
+        });
+        test('returns 400 when patch request sent with no data', () => {
+          return request(app)
+            .patch('/api/articles/5')
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Bad Request');
+            });
+        });
       });
     });
   });
