@@ -6,17 +6,14 @@ const {
 } = require('../db/utils/data-manipulation.js');
 
 describe('reFormatTimeStamp', () => {
-  it('it returns a string when passed a number ', () => {
+  it('it returns an instance of Date when passed a number ', () => {
     let input = 0;
-    let expectedOutput = 'string';
-    let actualOutput = reFormatTimeStamp(input);
-
-    expect(typeof actualOutput).toEqual(expectedOutput);
+    expect(reFormatTimeStamp(input) instanceof Date).toBe(true);
   });
 
   it('returns date in day/month/year when passed 0', () => {
     let input = 0;
-    let expectedOutput = '01/01/1970, 01:00:00';
+    let expectedOutput = new Date(input);
     let actualOutput = reFormatTimeStamp(input);
 
     expect(actualOutput).toEqual(expectedOutput);
@@ -24,7 +21,7 @@ describe('reFormatTimeStamp', () => {
 
   it('returns correct date in day/month/year when given unix code', () => {
     let input = 1511354163389;
-    let expectedOutput = '22/11/2017, 12:36:03';
+    let expectedOutput = new Date(input);
     let actualOutput = reFormatTimeStamp(input);
 
     expect(actualOutput).toEqual(expectedOutput);

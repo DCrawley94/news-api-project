@@ -86,7 +86,14 @@ describe('/api', () => {
             expect(article.article_id).toBe(1);
             expect(article.body).toBe('I find this existence challenging');
             expect(article.topic).toBe('mitch');
-            // expect(article.created_at).toBeInstanceOf(Date);
+            expect(article).toHaveProperty('created_at');
+            // console.log(typeof article.created_at, '<---- app test');
+            // console.log(
+            //   article.created_at,
+            //   '<---in app.test',
+            //   new Date(1542284514171)
+            // );
+            //expect(article.created_at instanceof Date).toBe(true);
             expect(article.votes).toBe(100);
           });
       });
