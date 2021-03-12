@@ -87,13 +87,6 @@ describe('/api', () => {
             expect(article.body).toBe('I find this existence challenging');
             expect(article.topic).toBe('mitch');
             expect(article).toHaveProperty('created_at');
-            // console.log(typeof article.created_at, '<---- app test');
-            // console.log(
-            //   article.created_at,
-            //   '<---in app.test',
-            //   new Date(1542284514171)
-            // );
-            //expect(article.created_at instanceof Date).toBe(true);
             expect(article.votes).toBe(100);
           });
       });
@@ -338,9 +331,22 @@ describe('/api', () => {
             expect(comments).toBeSortedBy('author');
           });
       });
+      test('status 200, responds with empty array when article exists but has no comments', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).toBe(0);
+          });
+      });
       describe('Error handling', () => {
         test("return 404 if article_id is valid but doesn't exist", () => {
           return request(app).get('/api/articles/57493/comments').expect(404);
+        });
+        test('status 400 if article_id is invalid', () => {
+          return request(app)
+            .get('/api/articles/pidgeon_party/comments')
+            .expect(400);
         });
       });
     });
