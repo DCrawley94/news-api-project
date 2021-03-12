@@ -2,6 +2,7 @@ const {
   addComment,
   fetchCommentsByArticleId,
 } = require('../models/commentsModels');
+const { checkArticleExists } = require('../models/articlesModels');
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
@@ -18,9 +19,13 @@ exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { sort_by } = req.query;
   const { order } = req.query;
-  
 
-  fetchCommentsByArticleId(article_id, sort_by, order).then((comments) => {
-    res.status(200).send({ comments });
-  });
+  Promise.all([
+    fetchCommentsByArticleId(article_id, sort_by, order),
+    checkArticleExists(article_id),
+  ])
+    .then(([comments]) => {
+      res.status(200).send({ comments });
+    })
+    .catch(next);
 };

@@ -1,7 +1,6 @@
 const connection = require('../db/connection');
 
 exports.fetchArticleById = (article_id) => {
-  //console.log(typeof article_id, '<--- ID');
   return connection
     .select('articles.*') //select all from articles
     .from('articles')
@@ -26,6 +25,17 @@ exports.changeArticleVotes = (article_id, inc_votes) => {
       if (articleRows.length) return articleRows[0];
       else {
         return Promise.reject({ status: 404, msg: 'Article not found' });
+      }
+    });
+};
+
+exports.checkArticleExists = (article_id) => {
+  return connection('articles')
+    .select('*')
+    .where({ article_id })
+    .then(([article]) => {
+      if (article === undefined) {
+        return Promise.reject({ status: 404, msg: 'Article Not Found' });
       }
     });
 };

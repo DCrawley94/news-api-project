@@ -296,7 +296,7 @@ describe('/api', () => {
         });
       });
     });
-    describe('GET', () => {
+    describe.only('GET', () => {
       test('status 200, responds with array of comments default sorted by created_at', () => {
         return request(app)
           .get('/api/articles/1/comments')
