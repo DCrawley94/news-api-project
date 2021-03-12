@@ -1,9 +1,7 @@
 // extract any functions you are using to manipulate your data, into this file
 
 exports.reFormatTimeStamp = (unixNum) => {
-  const dateObj = new Date(unixNum);
-  const humanDate = dateObj.toLocaleString();
-  return humanDate;
+  return new Date(unixNum);
 };
 
 exports.formatObj = (list, keyToChange, funct) => {

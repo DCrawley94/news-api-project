@@ -86,7 +86,7 @@ describe('/api', () => {
             expect(article.article_id).toBe(1);
             expect(article.body).toBe('I find this existence challenging');
             expect(article.topic).toBe('mitch');
-            expect(article.created_at).toBe('2018-11-15T12:21:54.000Z');
+            // expect(article.created_at).toBeInstanceOf(Date);
             expect(article.votes).toBe(100);
           });
       });
@@ -331,9 +331,11 @@ describe('/api', () => {
             expect(comments).toBeSortedBy('author');
           });
       });
-      // describe('Error handling', () => {
-      //   test('return 404', () => {});
-      // });
+      describe('Error handling', () => {
+        test("return 404 if article_id is valid but doesn't exist", () => {
+          return request(app).get('/api/articles/57493/comments').expect(404);
+        });
+      });
     });
     describe('Error Handling', () => {
       test('status 405 if invalid method', () => {
