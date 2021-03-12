@@ -28,6 +28,16 @@ describe('/api', () => {
           });
       });
     });
+    describe('Error handling', () => {
+      test('status 405 when method is invalid', () => {
+        return request(app)
+          .delete('/api/topics')
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Method Not Allowed');
+          });
+      });
+    });
   });
   describe('/users/:username', () => {
     describe('GET', () => {
@@ -51,6 +61,16 @@ describe('/api', () => {
               expect(msg).toBe('Username not found');
             });
         });
+      });
+    });
+    describe('Error handling', () => {
+      test('status 405 when method is invalid', () => {
+        return request(app)
+          .delete('/api/users/butter_bridge')
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Method Not Allowed');
+          });
       });
     });
   });
@@ -183,6 +203,16 @@ describe('/api', () => {
         });
       });
     });
+    describe('Error handling', () => {
+      test('status 405 when method is invalid', () => {
+        return request(app)
+          .delete('/api/articles/1')
+          .expect(405)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe('Method Not Allowed');
+          });
+      });
+    });
   });
   describe('/articles/:article_id/comments', () => {
     describe('POST', () => {
@@ -257,12 +287,14 @@ describe('/api', () => {
             .send({ body: 'duncan woz ere' })
             .expect(400);
         });
-        test('status 405 if invalid method', () => {
-          return request(app)
-            .delete('/api/articles/5/comments')
-            .send({ body: 'duncan woz ere' })
-            .expect(400);
-        });
+      });
+    });
+    describe('Error Handling', () => {
+      test('status 405 if invalid method', () => {
+        return request(app)
+          .delete('/api/articles/5/comments')
+          .send({ username: 'lurker', body: 'duncan woz ere' })
+          .expect(405);
       });
     });
   });

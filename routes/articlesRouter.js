@@ -4,20 +4,17 @@ const {
   patchArticleById,
 } = require('../controllers/articlesController');
 const { postComment } = require('../controllers/commentsController');
+const { send405error } = require('../error_handlers/customErrors');
 
 articlesRouter
   .route('/:article_id')
   .get(getArticleById)
   .patch(patchArticleById)
-  .all(() => {
-    Promise.reject({ status: 405, msg: 'Method Not Allowed' });
-  });
+  .all(send405error);
 
 articlesRouter
   .route('/:article_id/comments')
   .post(postComment)
-  .all(() => {
-    Promise.reject({ status: 405, msg: 'Method Not Allowed' });
-  });
+  .all(send405error);
 
 module.exports = articlesRouter;
