@@ -10,9 +10,10 @@ exports.addComment = (article_id, username, body) => {
     });
 };
 
-exports.fetchCommentsByArticleId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id, sort_by, order) => {
   return connection
     .select('*')
     .from('comments')
-    .where({ article_id: article_id });
+    .where({ article_id: article_id })
+    .orderBy(sort_by || 'created_at', order ||'desc');
 };
