@@ -184,4 +184,45 @@ describe('/api', () => {
       });
     });
   });
+  describe('/articles/:article_id/comments', () => {
+    describe('POST', () => {
+      test('status 201, responds with posted comment ', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'lurker',
+            body: 'I find the challenge existing',
+          })
+          .expect(201)
+          .then(({ body: { comment } }) => {
+            expect(comment.body).toBe('I find the challenge existing');
+            expect(comment.author).toBe('lurker');
+            expect(comment.article_id).toBe(1);
+            expect(comment.votes).toBe(0);
+            expect(comment).toHaveProperty('created_at');
+          });
+      });
+      test('status 201, comment is succesfully posted to the database ', () => {
+        return request(app)
+          .post('/api/articles/5/comments')
+          .send({ username: 'lurker', body: 'duncan woz ere' })
+          .expect(201)
+          .then(() => {
+            return connection
+              .select('*')
+              .from('comments')
+              .where('comment_id', 19)
+              .then((comment) => {
+                expect(comment.length).toBe(1);
+                comment = comment[0];
+                expect(comment.body).toBe('duncan woz ere');
+                expect(comment.author).toBe('lurker');
+                expect(comment.article_id).toBe(5);
+                expect(comment.votes).toBe(0);
+                expect(comment).toHaveProperty('created_at');
+              });
+          });
+      });
+    });
+  });
 });
