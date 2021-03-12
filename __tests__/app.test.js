@@ -289,6 +289,16 @@ describe('/api', () => {
         });
       });
     });
+    describe.only('GET', () => {
+      test('status 200, responds with array of comments default sorted by created_at', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).toBe(13);
+          });
+      });
+    });
     describe('Error Handling', () => {
       test('status 405 if invalid method', () => {
         return request(app)

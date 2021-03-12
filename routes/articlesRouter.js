@@ -3,7 +3,10 @@ const {
   getArticleById,
   patchArticleById,
 } = require('../controllers/articlesController');
-const { postComment } = require('../controllers/commentsController');
+const {
+  postComment,
+  getCommentsByArticleId,
+} = require('../controllers/commentsController');
 const { send405error } = require('../error_handlers/customErrors');
 
 articlesRouter
@@ -15,6 +18,7 @@ articlesRouter
 articlesRouter
   .route('/:article_id/comments')
   .post(postComment)
+  .get(getCommentsByArticleId)
   .all(send405error);
 
 module.exports = articlesRouter;

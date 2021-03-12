@@ -9,3 +9,10 @@ exports.addComment = (article_id, username, body) => {
       return commentRows[0];
     });
 };
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return connection
+    .select('*')
+    .from('comments')
+    .where({ article_id: article_id });
+};
