@@ -223,6 +223,47 @@ describe('/api', () => {
               });
           });
       });
+      describe('Error handling', () => {
+        test('status 404 if article id is valid but non-existant', () => {
+          return request(app)
+            .post('/api/articles/50000/comments')
+            .send({ username: 'lurker', body: 'duncan woz ere' })
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Path Not Found');
+            });
+        });
+        test('status 400 if article id is invalid', () => {
+          return request(app)
+            .post('/api/articles/pidgeon_party/comments')
+            .send({ username: 'lurker', body: 'duncan woz ere' })
+            .expect(400);
+        });
+        test('status 404 if author is valid but non-existant ', () => {
+          return request(app)
+            .post('/api/articles/5/comments')
+            .send({ username: 'duncan', body: 'duncan woz ere' })
+            .expect(404);
+        });
+        test('status 400 if posted body is malformed ', () => {
+          return request(app)
+            .post('/api/articles/5/comments')
+            .send({ username: 'lurker' })
+            .expect(400);
+        });
+        test('status 400 if posted body is malformed', () => {
+          return request(app)
+            .post('/api/articles/5/comments')
+            .send({ body: 'duncan woz ere' })
+            .expect(400);
+        });
+        test('status 405 if invalid method', () => {
+          return request(app)
+            .delete('/api/articles/5/comments')
+            .send({ body: 'duncan woz ere' })
+            .expect(400);
+        });
+      });
     });
   });
 });

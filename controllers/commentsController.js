@@ -1,5 +1,4 @@
 const { addComment } = require('../models/commentsModels');
-const articlesRouter = require('../routes/articlesRouter');
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;

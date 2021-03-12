@@ -13,6 +13,11 @@ articlesRouter
     Promise.reject({ status: 405, msg: 'Method Not Allowed' });
   });
 
-articlesRouter.route('/:article_id/comments').post(postComment);
+articlesRouter
+  .route('/:article_id/comments')
+  .post(postComment)
+  .all(() => {
+    Promise.reject({ status: 405, msg: 'Method Not Allowed' });
+  });
 
 module.exports = articlesRouter;
