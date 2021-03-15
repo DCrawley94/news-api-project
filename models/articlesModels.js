@@ -2,8 +2,15 @@ const connection = require('../db/connection');
 
 exports.fetchArticleById = (article_id) => {
   return connection
-    .select('articles.*') //select all from articles
-    .from('articles')
+    .select(
+      'articles.article_id',
+      'articles.title',
+      'articles.body',
+      'articles.votes',
+      'articles.topic',
+      'articles.author',
+      'articles.created_at'
+    ) //select all from articles
     .count({ comment_count: 'comments.article_id' }) //count comments per article
     .leftJoin('comments', 'articles.article_id', 'comments.article_id') //left join to get required db data
     .groupBy('articles.article_id')
@@ -38,4 +45,20 @@ exports.checkArticleExists = (article_id) => {
         return Promise.reject({ status: 404, msg: 'Article Not Found' });
       }
     });
+};
+
+exports.fetchArticles = () => {
+  return connection('articles')
+    .select(
+      'articles.article_id',
+      'articles.title',
+      'articles.body',
+      'articles.votes',
+      'articles.topic',
+      'articles.author',
+      'articles.created_at'
+    )
+    .count({ comment_count: 'comments.article_id' })
+    .leftJoin('comments', 'articles.article_id', 'comments.article_id')
+    .groupBy('articles.article_id');
 };

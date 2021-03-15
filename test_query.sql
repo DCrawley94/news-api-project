@@ -1,7 +1,7 @@
 \c nc_news_test;
 
 
-SELECT * from comments;
+SELECT * from articles;
 SELECT * from articles;
 
 -- SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes,    

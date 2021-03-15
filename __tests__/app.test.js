@@ -74,6 +74,34 @@ describe('/api', () => {
       });
     });
   });
+  describe('/articles', () => {
+    describe.only('GET', () => {
+      test('status 200, responds with array of article objects', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBe(12);
+            expect(articles[0]).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            });
+          });
+      });
+      test('status 200, responds with array of article objects which have a comment_count property', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toHaveProperty('comment_count');
+          });
+      });
+    });
+  });
   describe('/articles/:article_id', () => {
     describe('GET', () => {
       test('status 200, returns article object of correct id', () => {
@@ -289,7 +317,7 @@ describe('/api', () => {
         });
       });
     });
-    describe.only('GET', () => {
+    describe('GET', () => {
       test('status 200, responds with array of comments default sorted by created_at', () => {
         return request(app)
           .get('/api/articles/1/comments')
