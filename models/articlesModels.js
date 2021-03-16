@@ -47,7 +47,7 @@ exports.checkArticleExists = (article_id) => {
     });
 };
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (sort_by, order, author) => {
   return connection('articles')
     .select(
       'articles.article_id',
@@ -60,5 +60,18 @@ exports.fetchArticles = () => {
     )
     .count({ comment_count: 'comments.article_id' })
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
-    .groupBy('articles.article_id');
+    .groupBy('articles.article_id')
+    .orderBy(sort_by || 'created_at', order || 'desc')
+    .modify((querySoFar) => {
+      if (author !== undefined) {
+        querySoFar.where('articles.author', '=', author);
+      }
+    });
 };
+//Multiple modifys?
+
+// .modify( ( querySoFar ) => {
+//     if (topic !== undefined) {
+
+//   }
+//   })

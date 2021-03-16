@@ -74,7 +74,7 @@ describe('/api', () => {
       });
     });
   });
-  describe('/articles', () => {
+  describe.only('/articles', () => {
     describe.only('GET', () => {
       test('status 200, responds with array of article objects', () => {
         return request(app)
@@ -90,6 +90,7 @@ describe('/api', () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
             });
+            expect(articles).toBeSortedBy('created_at', { descending: true });
           });
       });
       test('status 200, responds with array of article objects which have a comment_count property', () => {
@@ -98,6 +99,33 @@ describe('/api', () => {
           .expect(200)
           .then(({ body: { articles } }) => {
             expect(articles[0]).toHaveProperty('comment_count');
+            expect(articles).toBeSortedBy('created_at', { descending: true });
+          });
+      });
+      test('status 200, response array is sorted by given column if it is a valid column', () => {
+        return request(app)
+          .get('/api/articles/?sort_by=author')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy('author', { descending: true });
+          });
+      });
+      test('status 200, response array ordered according to given query (default to descending tested above) ', () => {
+        return request(app)
+          .get('/api/articles/?sort_by=article_id&order=asc')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy('article_id');
+          });
+      });
+      test('status 200, response array of articles by given author', () => {
+        return request(app)
+          .get('/api/articles/?author=rogersop')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy('created_at', { descending: true });
+            expect(articles.length).toBe(3);
+            expect(articles[0].author).toBe('rogersop');
           });
       });
     });
