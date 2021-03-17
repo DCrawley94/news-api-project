@@ -13,3 +13,14 @@ exports.fetchUserById = (username) => {
       }
     });
 };
+
+exports.checkUserExists = (author) => {
+  return connection('users')
+    .select('*')
+    .where('username', '=', author)
+    .then((users) => {
+      if (!users.length) {
+        return Promise.reject({ status: 404, msg: 'Author Not Found' });
+      }
+    });
+};

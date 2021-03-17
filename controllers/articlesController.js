@@ -3,6 +3,7 @@ const {
   changeArticleVotes,
   fetchArticles,
 } = require('../models/articlesModels');
+const { checkUserExists } = require('../models/userModels');
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -28,9 +29,22 @@ exports.getArticles = (req, res, next) => {
   const { sort_by } = req.query;
   const { order } = req.query;
   const { author } = req.query;
-  fetchArticles(sort_by, order, author)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  const { topic } = req.query;
+
+  if (!author) {
+    fetchArticles(sort_by, order, topic)
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  } else {
+    Promise.all([
+      fetchArticles(sort_by, order, author, topic),
+      checkUserExists(author),
+    ])
+      .then(([articles]) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  }
 };

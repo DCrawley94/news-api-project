@@ -74,8 +74,8 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/articles', () => {
-    describe.only('GET', () => {
+  describe('/articles', () => {
+    describe('GET', () => {
       test('status 200, responds with array of article objects', () => {
         return request(app)
           .get('/api/articles')
@@ -127,6 +127,43 @@ describe('/api', () => {
             expect(articles.length).toBe(3);
             expect(articles[0].author).toBe('rogersop');
           });
+      });
+      test('status 200, response array of artciles on a certain topic', () => {
+        return request(app)
+          .get('/api/articles/?topic=cats')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toBeSortedBy('created_at', { descending: true });
+            expect(articles.length).toBe(1);
+            expect(articles[0].topic).toBe('cats');
+          });
+      });
+      describe('Error Handling', () => {
+        test('status 400 when sort-by query references non-existant column', () => {
+          return request(app)
+            .get('/api/articles/?sort_by=pidgeon_party')
+            .expect(400)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Bad Request');
+            });
+        });
+        test('status 200 when order query is invalid (not asc/desc), return default ordered list', () => {
+          return request(app)
+            .get('/api/articles/?order=pidgeon_party')
+            .expect(200)
+            .then(({ body: { articles } }) => {
+              expect(articles).toBeSortedBy('created_at', { descending: true });
+            });
+        });
+        test("status 404 when author doesn't exist", () => {
+          return request(app)
+            .get('/api/articles/?author=duncan')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Author Not Found');
+            });
+        });
+        test("status 404 when topic valid but doesn't exist *YET*", () => {});
       });
     });
   });

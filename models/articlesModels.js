@@ -1,7 +1,7 @@
 const connection = require('../db/connection');
 
 exports.fetchArticleById = (article_id) => {
-  return connection
+  return connection('articles')
     .select(
       'articles.article_id',
       'articles.title',
@@ -10,7 +10,7 @@ exports.fetchArticleById = (article_id) => {
       'articles.topic',
       'articles.author',
       'articles.created_at'
-    ) //select all from articles
+    )
     .count({ comment_count: 'comments.article_id' }) //count comments per article
     .leftJoin('comments', 'articles.article_id', 'comments.article_id') //left join to get required db data
     .groupBy('articles.article_id')
@@ -47,7 +47,10 @@ exports.checkArticleExists = (article_id) => {
     });
 };
 
-exports.fetchArticles = (sort_by, order, author) => {
+exports.fetchArticles = (sort_by, order, author, topic) => {
+  if (order !== 'asc' || order !== 'desc') {
+    order = undefined;
+  }
   return connection('articles')
     .select(
       'articles.article_id',
@@ -65,13 +68,8 @@ exports.fetchArticles = (sort_by, order, author) => {
     .modify((querySoFar) => {
       if (author !== undefined) {
         querySoFar.where('articles.author', '=', author);
+      } else if (topic !== undefined) {
+        querySoFar.where('articles.topic', '=', topic);
       }
     });
 };
-//Multiple modifys?
-
-// .modify( ( querySoFar ) => {
-//     if (topic !== undefined) {
-
-//   }
-//   })
