@@ -12,6 +12,19 @@ afterAll(() => {
 });
 
 describe('/api', () => {
+  describe('GET', () => {
+    test('status 200, responds with the endpoints.json ', () => {
+      return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({ body: { endpoints } }) => {
+          expect(typeof endpoints).toBe('object');
+          expect(endpoints).toHaveProperty('GET /api');
+          expect(endpoints).toHaveProperty('GET /api/topics');
+          expect(endpoints).toHaveProperty('GET /api/articles');
+        });
+    });
+  });
   describe('/topics', () => {
     //----- GET TOPICS
     describe('GET', () => {
