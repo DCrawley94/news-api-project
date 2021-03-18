@@ -15,11 +15,10 @@ You are now connected to database "nc_news_test" as user "dcrawley".
          12 | Moustache                                              | Have you seen the size of that thing?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |     0 | mitch | butter_bridge | 1974-11-26 12:21:54.171+00
 (12 rows)
 
-   username    |                                avatar_url                                 |    name    
----------------+---------------------------------------------------------------------------+------------
- butter_bridge | https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg     | jonny
- icellusedkars | https://avatars2.githubusercontent.com/u/24604688?s=460&v=4               | sam
- rogersop      | https://avatars2.githubusercontent.com/u/24394918?s=400&v=4               | paul
- lurker        | https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png | do_nothing
-(4 rows)
+          description           | slug  
+--------------------------------+-------
+ The man, the Mitch, the legend | mitch
+ Not dogs                       | cats
+ what books are made of         | paper
+(3 rows)
 

@@ -2,7 +2,7 @@
 
 
 SELECT * from articles;
-SELECT * from users;
+SELECT * from topics;
 
 -- SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at, articles.votes,    
 -- COUNT (comments.comment_id) AS comment_count

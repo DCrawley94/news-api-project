@@ -4,6 +4,7 @@ const {
   fetchArticles,
 } = require('../models/articlesModels');
 const { checkUserExists } = require('../models/userModels');
+const { checkTopicExists } = require('../models/topicModels');
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -30,16 +31,25 @@ exports.getArticles = (req, res, next) => {
   const { order } = req.query;
   const { author } = req.query;
   const { topic } = req.query;
-  if (!author) {
+  if (!author && !topic) {
     fetchArticles(sort_by, order, author, topic)
       .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  } else if (!topic) {
+    Promise.all([
+      fetchArticles(sort_by, order, author, topic),
+      checkUserExists(author),
+    ])
+      .then(([articles]) => {
         res.status(200).send({ articles });
       })
       .catch(next);
   } else {
     Promise.all([
       fetchArticles(sort_by, order, author, topic),
-      checkUserExists(author),
+      checkTopicExists(topic),
     ])
       .then(([articles]) => {
         res.status(200).send({ articles });

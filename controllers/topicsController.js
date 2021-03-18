@@ -1,3 +1,4 @@
+const connection = require('../db/connection');
 const { fetchTopics } = require('../models/topicModels');
 
 exports.getTopics = (req, res, next) => {

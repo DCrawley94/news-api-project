@@ -138,6 +138,22 @@ describe('/api', () => {
             expect(articles[0].topic).toBe('cats');
           });
       });
+      test('status 200 response array is empty when queried with an author who exists but has written no articles', () => {
+        return request(app)
+          .get('/api/articles/?author=lurker')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBe(0);
+          });
+      });
+      test('status 200 response array is empty when queried with a query that exists but has no associated articles ', () => {
+        return request(app)
+          .get('/api/articles/?topic=paper')
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).toBe(0);
+          });
+      });
       describe('Error Handling', () => {
         test('status 400 when sort-by query references non-existant column', () => {
           return request(app)
@@ -163,7 +179,14 @@ describe('/api', () => {
               expect(msg).toBe('Author Not Found');
             });
         });
-        test("status 404 when topic valid but doesn't exist *YET*", () => {});
+        test("status 404 when topic valid but doesn't exist *YET*", () => {
+          return request(app)
+            .get('/api/articles/?topic=pidgeon-party')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Topic Not Found');
+            });
+        });
       });
     });
   });
