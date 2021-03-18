@@ -276,8 +276,7 @@ describe('/api', () => {
               .select('*')
               .from('articles')
               .where('article_id', 5)
-              .then((article) => {
-                article = article[0];
+              .then(([article]) => {
                 expect(article.author).toBe('rogersop');
                 expect(article.title).toBe(
                   'UNCOVERED: catspiracy to bring down democracy'
@@ -487,7 +486,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/api/comments/:comment_id', () => {
+  describe('/api/comments/:comment_id', () => {
     describe('PATCH', () => {
       //----- PATCH   COMMENTS/COMMENT_ID
       test('Status 200, responds with updated comment object', () => {
@@ -506,6 +505,56 @@ describe('/api', () => {
             );
           });
       });
+      test('status 200, comment is succesfully patched', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({ inc_votes: 30 })
+          .expect(200)
+          .then(() => {
+            return connection
+              .select('*')
+              .from('comments')
+              .where('comment_id', 1)
+              .then(([comment]) => {
+                expect(comment.comment_id).toBe(1);
+                expect(comment.author).toBe('butter_bridge');
+                expect(comment.article_id).toBe(9);
+                expect(comment.votes).toBe(46);
+                expect(comment).toHaveProperty('created_at');
+                expect(comment.body).toBe(
+                  "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+                );
+              });
+          });
+      });
+      describe('Error Handling', () => {
+        test("status 404 when given a comment_id that doesn't exist yet", () => {
+          return request(app)
+            .patch('/api/comments/5000')
+            .send({ inc_votes: 5 })
+            .expect(404);
+        });
+        test('status 400 when given invalid comment_id ', () => {
+          return request(app)
+            .patch('/api/comments/pidgeon_party')
+            .send({ inc_votes: 5 })
+            .expect(400);
+        });
+        test('status 400 when patch request sent with invalid data type', () => {
+          return request(app)
+            .patch('/api/comments/1')
+            .send({ inc_votes: 'pidgeon_party' })
+            .expect(400);
+        });
+        test('status 400 when patch request sent with no data', () => {
+          return request(app).patch('/api/comments/1').expect(400);
+        });
+      });
+    });
+  });
+  describe('Error Handling', () => {
+    test('status 405 if http method is not allowed', () => {
+      return request(app).post('/api/comments/1').expect(405);
     });
   });
 });
