@@ -551,9 +551,38 @@ describe('/api', () => {
         });
       });
     });
+    describe('DELETE', () => {
+      test('status 204 no content, comment successfully deleted', () => {
+        return request(app)
+          .delete('/api/comments/1')
+          .expect(204)
+          .then(() => {
+            return connection
+              .select('*')
+              .from('comments')
+              .where('comment_id', '=', 1);
+          })
+          .then((comments) => {
+            expect(comments).toHaveLength(0);
+          });
+      });
+      describe('Error Handling', () => {
+        test('status 404 when delete method used on non-existant comment_id', () => {
+          return request(app)
+            .delete('/api/comments/5000')
+            .expect(404)
+            .then(({ body: { msg } }) => {
+              expect(msg).toBe('Comment not found');
+            });
+        });
+        test('status 400 when delete method used on invalid comment_id', () => {
+          return request(app).delete('/api/comments/pidgeon_party').expect(400);
+        });
+      });
+    });
   });
   describe('Error Handling', () => {
-    test('status 405 if http method is not allowed', () => {
+    test('status 405 if http method is not allowed, comment successfully deleted', () => {
       return request(app).post('/api/comments/1').expect(405);
     });
   });
