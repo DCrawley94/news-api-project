@@ -1,6 +1,7 @@
 const {
   addComment,
   fetchCommentsByArticleId,
+  changeCommentVotes,
 } = require('../models/commentsModels');
 const { checkArticleExists } = require('../models/articlesModels');
 
@@ -26,6 +27,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
   ])
     .then(([comments]) => {
       res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.patchCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  changeCommentVotes(comment_id, inc_votes)
+    .then(([comment]) => {
+      res.status(200).send({ comment });
     })
     .catch(next);
 };

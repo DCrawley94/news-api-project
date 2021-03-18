@@ -13,6 +13,7 @@ afterAll(() => {
 
 describe('/api', () => {
   describe('/topics', () => {
+    //----- GET TOPICS
     describe('GET', () => {
       test('status 200, responds with all topics  ', () => {
         return request(app)
@@ -41,6 +42,7 @@ describe('/api', () => {
   });
   describe('/users/:username', () => {
     describe('GET', () => {
+      //------ GET USERS/USERNAME
       test('status 200, returns user object', () => {
         return request(app)
           .get('/api/users/butter_bridge')
@@ -76,6 +78,7 @@ describe('/api', () => {
   });
   describe('/articles', () => {
     describe('GET', () => {
+      //------GET ARTICLES
       test('status 200, responds with array of article objects', () => {
         return request(app)
           .get('/api/articles')
@@ -189,9 +192,15 @@ describe('/api', () => {
         });
       });
     });
+    describe('Error Handling', () => {
+      test('status 405 when http method is not allowed', () => {
+        return request(app).delete('/api/articles').expect(405);
+      });
+    });
   });
   describe('/articles/:article_id', () => {
     describe('GET', () => {
+      //-------GET ARTICLES/ARTICLE_ID
       test('status 200, returns article object of correct id', () => {
         return request(app)
           .get('/api/articles/1')
@@ -237,6 +246,7 @@ describe('/api', () => {
       });
     });
     describe('PATCH', () => {
+      //------  PATCH ARTICLES/ARTICLE_ID
       test('status 200, responds with updated article object', () => {
         return request(app)
           .patch('/api/articles/5')
@@ -332,6 +342,7 @@ describe('/api', () => {
   });
   describe('/articles/:article_id/comments', () => {
     describe('POST', () => {
+      //------ POST ARTICLES/ARTICLE_ID/COMMENTS
       test('status 201, responds with posted comment ', () => {
         return request(app)
           .post('/api/articles/1/comments')
@@ -406,6 +417,7 @@ describe('/api', () => {
       });
     });
     describe('GET', () => {
+      //------ GET ARTICLES/ARTICLE_ID/COMMENTS
       test('status 200, responds with array of comments default sorted by created_at', () => {
         return request(app)
           .get('/api/articles/1/comments')
@@ -472,6 +484,27 @@ describe('/api', () => {
           .delete('/api/articles/5/comments')
           .send({ username: 'lurker', body: 'duncan woz ere' })
           .expect(405);
+      });
+    });
+  });
+  describe.only('/api/comments/:comment_id', () => {
+    describe('PATCH', () => {
+      //----- PATCH   COMMENTS/COMMENT_ID
+      test('Status 200, responds with updated comment object', () => {
+        return request(app)
+          .patch('/api/comments/1')
+          .send({ inc_votes: 1 })
+          .expect(200)
+          .then(({ body: { comment } }) => {
+            expect(comment.comment_id).toBe(1);
+            expect(comment.author).toBe('butter_bridge');
+            expect(comment.article_id).toBe(9);
+            expect(comment.votes).toBe(17);
+            expect(comment).toHaveProperty('created_at');
+            expect(comment.body).toBe(
+              "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+            );
+          });
       });
     });
   });
