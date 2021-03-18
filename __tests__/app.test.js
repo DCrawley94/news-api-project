@@ -25,6 +25,11 @@ describe('/api', () => {
         });
     });
   });
+  describe('Error Handling', () => {
+    test('status 405 if http method is not allowed', () => {
+      return request(app).post('/api').expect(405);
+    });
+  });
   describe('/topics', () => {
     //----- GET TOPICS
     describe('GET', () => {
