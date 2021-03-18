@@ -65,11 +65,12 @@ describe('/api', () => {
         return request(app)
           .get('/api/users/butter_bridge')
           .expect(200)
-          .then(({ body }) => {
-            expect(body).toHaveProperty('user');
-            expect(body.user).toHaveProperty('username');
-            expect(body.user).toHaveProperty('avatar_url');
-            expect(body.user).toHaveProperty('name');
+          .then(({ body: { user } }) => {
+            expect(user.username).toBe('butter_bridge');
+            expect(user.avatar_url).toBe(
+              'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+            );
+            expect(user.name).toBe('jonny');
           });
       });
       describe('Error handling', () => {
@@ -386,9 +387,7 @@ describe('/api', () => {
               .select('*')
               .from('comments')
               .where('comment_id', 19)
-              .then((comment) => {
-                expect(comment.length).toBe(1);
-                comment = comment[0];
+              .then(([comment]) => {
                 expect(comment.body).toBe('duncan woz ere');
                 expect(comment.author).toBe('lurker');
                 expect(comment.article_id).toBe(5);
