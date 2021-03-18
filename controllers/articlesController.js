@@ -30,9 +30,8 @@ exports.getArticles = (req, res, next) => {
   const { order } = req.query;
   const { author } = req.query;
   const { topic } = req.query;
-
   if (!author) {
-    fetchArticles(sort_by, order, topic)
+    fetchArticles(sort_by, order, author, topic)
       .then((articles) => {
         res.status(200).send({ articles });
       })
