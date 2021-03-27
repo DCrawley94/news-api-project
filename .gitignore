@@ -1,2 +1,4 @@
 node_modules
 knexfile.js
+
+package-lock.json

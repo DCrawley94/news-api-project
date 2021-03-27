@@ -110,7 +110,7 @@ describe('/api', () => {
               article_id: expect.any(Number),
               topic: expect.any(String),
               created_at: expect.any(String),
-              votes: expect.any(Number),
+              votes: expect.any(Number)
             });
             expect(articles).toBeSortedBy('created_at', { descending: true });
           });
@@ -366,7 +366,7 @@ describe('/api', () => {
           .post('/api/articles/1/comments')
           .send({
             username: 'lurker',
-            body: 'I find the challenge existing',
+            body: 'I find the challenge existing'
           })
           .expect(201)
           .then(({ body: { comment } }) => {
@@ -446,7 +446,7 @@ describe('/api', () => {
               votes: expect.any(Number),
               created_at: expect.any(String),
               author: expect.any(String),
-              body: expect.any(String),
+              body: expect.any(String)
             });
             expect(comments).toBeSortedBy('created_at', { descending: true });
           });
@@ -484,8 +484,8 @@ describe('/api', () => {
           });
       });
       describe('Error handling', () => {
-        test("return 404 if article_id is valid but doesn't exist", () => {
-          return request(app).get('/api/articles/57493/comments').expect(404);
+        test.only("return 404 if article_id is valid but doesn't exist", () => {
+          return request(app).get('/api/articles/1000/comments').expect(404);
         });
         test('status 400 if article_id is invalid', () => {
           return request(app)
