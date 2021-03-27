@@ -4,16 +4,6 @@ exports.reFormatTimeStamp = (unixNum) => {
   return new Date(unixNum);
 };
 
-exports.formatObj = (list, keyToChange, funct) => {
-  const newList = list.map((listItem) => {
-    let newItem = { ...listItem };
-    newItem[keyToChange] = funct(newItem[keyToChange]);
-
-    return newItem;
-  });
-  return newList;
-};
-
 exports.createRef = (list, key, value) => {
   let lookup = {};
 

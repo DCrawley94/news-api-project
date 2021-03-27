@@ -7,7 +7,6 @@ const {
 const {
   reFormatTimeStamp,
   renameKeys,
-  formatObj,
   createRef,
   formatComments,
 } = require('../utils/data-manipulation');
